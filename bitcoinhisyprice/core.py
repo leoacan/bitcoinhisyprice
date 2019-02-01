@@ -20,26 +20,12 @@ class CoinMarketCap(object):
 
 
     def coin_price(self,**kwargs):
-        """
-        get currency price info from <start> to <end>
 
-        GET /currencies/<currency>/<start>/<end>/
-        GET /currencies/<currency>/
-
-        Optional parameters:
-            (int) start - return results starting from the specified timestamp
-            (int) end - return results ending with the specified timestamp
-
-        :param currency: 货币名称 必须是字符串
-        :param disable_cache: 禁用缓存
-        :param start: 开始时间timestamp
-        :param end: 结束时间timestamp
-        :return:
-        """
         params={}
         params.update(kwargs)
         response = self.client.request(self.__CMC_HISTORY_DATA_URL, params, False)
         historyprice=[]
+
         soup=bs(response, u'html.parser')
         tables=soup.findChildren('table',{'class':'table'})
         historytable=tables[0]
@@ -69,19 +55,15 @@ class CoinMarketCap(object):
             historyprice.append(aOneDayPrice)
         return historyprice
 
-
-
-
-
-
-
-if __name__=="__main__":
+if __name__ == '__main__':
     cap=CoinMarketCap()
     pricetable=cap.coin_price(start=20180101,end=20181231)
-
-    fp = open("/home/chauncey/vendors/historyprice.json", 'w')
-    json.dump(pricetable, fp)
+    dic={}
+    for dayprice in pricetable:
+        key=dayprice['Date']
+        dic[key]=(float(dayprice["Open"])+float(dayprice["Close"]))/2
+    fp = open("path_to_save_data", 'w')
+    json.dump(dic, fp)
     fp.close()
-
 
 
