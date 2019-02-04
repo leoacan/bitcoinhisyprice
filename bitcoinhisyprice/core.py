@@ -62,7 +62,7 @@ if __name__ == '__main__':
     for dayprice in pricetable:
         key=dayprice['Date']
         dic[key]=(float(dayprice["Open"])+float(dayprice["Close"]))/2
-    fp = open("path_to_save_data", 'w')
+    fp = open("rate.json", 'w')
     json.dump(dic, fp)
     fp.close()
 
